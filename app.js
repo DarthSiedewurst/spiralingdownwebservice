@@ -7,7 +7,7 @@ const fs = require('fs');
 const Express = require('express')();
 //const Https = require('http').Server(options, Express);
 const Http = require('http').Server(Express);
-const Socketio = require('socket.io')(Http);
+const Socketio = require('socket.io')(Http, { origins: 'http://localhost:8080' });
 
 let testMessage = 'Das ist ein Test';
 
