@@ -1,5 +1,5 @@
 FROM node:12
-MAINTAINER marcomuehler
+MAINTAINER marcomueller
 EXPOSE 3000
 WORKDIR /app
 COPY . /app
