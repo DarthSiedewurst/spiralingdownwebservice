@@ -12,7 +12,7 @@ server.listen(3000);
 
 var io = require('socket.io').listen(server);
 
-let testMessage = 'Das ist kein Test';
+let testMessage = 'Das sind zwei Tests';
 
 io.sockets.on('connection', (socket) => {
   socket.emit('testMessage', testMessage);
