@@ -25,6 +25,7 @@ jobs:
           password: ${{ secrets.PW }}
           script: |
             cd /var/www/vhosts/spiralingdown.de/docker/spiralingdown/spiralingdownwebservice
+            git pull
             docker stop service
             docker rm service
             docker build -t serviceimage .
