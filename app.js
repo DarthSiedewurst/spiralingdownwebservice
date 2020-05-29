@@ -3,8 +3,8 @@ var app = require('express')();
 var https = require('https');
 var server = https.createServer(
   {
-    key: fs.readFileSync('/usr/local/psa/var/modules/letsencrypt/etc/archive/spiralingdown.de/privkey1.pem'),
-    cert: fs.readFileSync('/usr/local/psa/var/modules/letsencrypt/etc/archive/spiralingdown.de/fullchain1.pem'),
+    key: fs.readFileSync('./certs/privkey1.pem'),
+    cert: fs.readFileSync('./certs/fullchain1.pem'),
   },
   app
 );
