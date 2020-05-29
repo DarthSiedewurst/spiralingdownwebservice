@@ -1,11 +1,11 @@
 var fs = require('fs');
 var app = require('express')();
-var https = require('http');
+var https = require('https');
 var server = https.createServer(
-  /*   {
+    {
     key: fs.readFileSync('./certs/privkey1.pem'),
     cert: fs.readFileSync('./certs/fullchain1.pem'),
-  }, */
+  },
   app
 );
 server.listen(3000);
