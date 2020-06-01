@@ -9,6 +9,8 @@ try {
   };
   https = require("https");
 } catch (e) {
+  console.log(e);
+  console.log("Zertifikate nicht erreichbar");
   https = require("http");
 }
 
@@ -19,8 +21,15 @@ var io = require("socket.io").listen(server);
 
 let testMessage = "Das ist kein Test";
 
-io.sockets.on("connection", (socket) => {
-  socket.emit("testMessage", testMessage);
+io.sockets.on("connection", (gameRoom) => {
+  console.log("Connected");
+
+  gameRoom.on("joinLobby", (lobby) => {
+    console.log("Lobby Joined: " + lobby);
+
+    gameRoom.join(lobby);
+    return gameRoom.in(lobby).emit("lobbyJoined", "You have sucessfully joined: " + lobby);
+  });
 });
 
 app.get("/", (request, response) => {
