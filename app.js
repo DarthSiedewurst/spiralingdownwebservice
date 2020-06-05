@@ -1,7 +1,7 @@
-var fs = require("fs");
-var app = require("express")();
-var options = {};
-var https = null;
+const fs = require("fs");
+const app = require("express")();
+let options = {};
+let https = null;
 try {
   options = {
     key: fs.readFileSync("./certs/privkey1.pem"),
@@ -14,24 +14,29 @@ try {
   https = require("http");
 }
 
-var server = https.createServer(options, app);
+const server = https.createServer(options, app);
 server.listen(3000);
 
-var io = require("socket.io").listen(server);
+let lobbyName = "";
+let Players = [];
 
-let testMessage = "Das ist kein Test";
-
-io.sockets.on("connection", (gameRoom) => {
+const io = require("socket.io").listen(server);
+io.on("connection", (gameRoom) => {
   console.log("Connected");
 
   gameRoom.on("joinLobby", (lobby) => {
     console.log("Lobby Joined: " + lobby);
 
-    gameRoom.join(lobby);
-    return gameRoom.in(lobby).emit("lobbyJoined", "You have sucessfully joined: " + lobby);
-  });
-});
+    lobbyName = lobby;
 
-app.get("/", (request, response) => {
-  console.log("app.get");
+    gameRoom.join(lobby);
+    io.in(lobby).emit("lobbyJoined", "You have sucessfully joined: " + lobby);
+    gameRoom.on("addPlayerToSocket", (payload) => {
+      const newPlayers = Players;
+      newPlayers.push(payload.newPlayer);
+      Players = newPlayers;
+      console.log(payload.lobby);
+      io.in(payload.lobby).emit("playersUpdated", Players);
+    });
+  });
 });
