@@ -1,5 +1,6 @@
 const fs = require("fs");
 const app = require("express")();
+
 let options = {};
 let https = null;
 try {
@@ -17,26 +18,40 @@ try {
 const server = https.createServer(options, app);
 server.listen(3000);
 
-let lobbyName = "";
 let Players = [];
 
 const io = require("socket.io").listen(server);
-io.on("connection", (gameRoom) => {
+io.sockets.adapter.rooms.players = [];
+
+io.sockets.on("connection", (gameRoom) => {
   console.log("Connected");
 
   gameRoom.on("joinLobby", (lobby) => {
     console.log("Lobby Joined: " + lobby);
-
-    lobbyName = lobby;
+    gameRoom.adapter.rooms.lobby = lobby;
 
     gameRoom.join(lobby);
-    io.in(lobby).emit("lobbyJoined", "You have sucessfully joined: " + lobby);
-    gameRoom.on("addPlayerToSocket", (payload) => {
-      const newPlayers = Players;
-      newPlayers.push(payload.newPlayer);
-      Players = newPlayers;
-      console.log(payload.lobby);
-      io.in(payload.lobby).emit("playersUpdated", Players);
+    gameRoom.emit("lobbyJoined", "You have sucessfully joined: " + lobby);
+
+    gameRoom.on("addPlayerToSocket", (newPlayer) => {
+      const lobby = gameRoom.adapter.rooms.lobby;
+      let players = [];
+
+      if (io.sockets.adapter.rooms[lobby].players !== undefined) {
+        players = io.sockets.adapter.rooms[lobby].players;
+      }
+      const newPlayers = players;
+
+      newPlayers.push(newPlayer);
+      players = newPlayers;
+      io.sockets.adapter.rooms[lobby].players = players;
+      io.sockets.in(lobby).emit("playersUpdated", players);
+    });
+
+    gameRoom.on("getPlayerFromSocket", () => {
+      io.sockets
+        .in(gameRoom.adapter.rooms.lobby)
+        .emit("playersUpdated", io.sockets.adapter.rooms[gameRoom.adapter.rooms.lobby].players);
     });
   });
 });
