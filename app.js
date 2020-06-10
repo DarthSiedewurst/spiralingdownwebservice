@@ -35,6 +35,11 @@ io.sockets.on("connection", (gameRoom) => {
     gameRoom.emit("lobbyJoined", "You have sucessfully joined: " + lobby);
     io.sockets.in(lobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby].players);
     io.sockets.in(lobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
+
+    gameRoom.on("startGame", () => {
+      io.sockets.in(lobby).emit("gameStarted");
+    });
+
     // Players
     gameRoom.on("addPlayerToSocket", (newPlayer) => {
       const lobby = gameRoom.adapter.rooms.lobby;
@@ -63,6 +68,13 @@ io.sockets.on("connection", (gameRoom) => {
       io.sockets.adapter.rooms[lobby].ruleset = ruleset;
 
       io.sockets.in(lobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
+    });
+    // Dice
+    gameRoom.on("moveInSocket", (payload) => {
+      const lobby = gameRoom.adapter.rooms.lobby;
+      io.sockets.adapter.rooms[lobby].players = payload.players;
+
+      io.sockets.in(lobby).emit("diceWasRolled", { roll: payload.roll, playerId: payload.playerId });
     });
   });
 });
