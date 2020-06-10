@@ -22,6 +22,7 @@ let Players = [];
 
 const io = require("socket.io").listen(server);
 io.sockets.adapter.rooms.players = [];
+io.sockets.adapter.rooms.ruleset = "";
 
 io.sockets.on("connection", (gameRoom) => {
   console.log("Connected");
@@ -32,7 +33,9 @@ io.sockets.on("connection", (gameRoom) => {
 
     gameRoom.join(lobby);
     gameRoom.emit("lobbyJoined", "You have sucessfully joined: " + lobby);
-
+    io.sockets.in(lobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby].players);
+    io.sockets.in(lobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
+    // Players
     gameRoom.on("addPlayerToSocket", (newPlayer) => {
       const lobby = gameRoom.adapter.rooms.lobby;
       let players = [];
@@ -52,6 +55,14 @@ io.sockets.on("connection", (gameRoom) => {
       io.sockets
         .in(gameRoom.adapter.rooms.lobby)
         .emit("playersUpdated", io.sockets.adapter.rooms[gameRoom.adapter.rooms.lobby].players);
+    });
+
+    // Ruleset
+    gameRoom.on("setRulesetToSocket", (ruleset) => {
+      const lobby = gameRoom.adapter.rooms.lobby;
+      io.sockets.adapter.rooms[lobby].ruleset = ruleset;
+
+      io.sockets.in(lobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
     });
   });
 });
