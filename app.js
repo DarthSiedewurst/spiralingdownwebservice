@@ -76,5 +76,9 @@ io.sockets.on("connection", (gameRoom) => {
 
       io.sockets.in(lobby).emit("diceWasRolled", { roll: payload.roll, playerId: payload.playerId });
     });
+    gameRoom.on("okClicked", () => {
+      const lobby = gameRoom.adapter.rooms.lobby;
+      io.sockets.in(lobby).emit("okHasBeenClicked");
+    });
   });
 });
