@@ -72,9 +72,13 @@ io.sockets.on("connection", (gameRoom) => {
     // Dice
     gameRoom.on("moveInSocket", (payload) => {
       const lobby = gameRoom.adapter.rooms.lobby;
-      io.sockets.adapter.rooms[lobby].players = payload.players;
+      let players = payload.players;
 
-      io.sockets.in(lobby).emit("diceWasRolled", { roll: payload.roll, playerId: payload.playerId });
+      players[payload.playerId].tile = payload.players[payload.playerId].tile + payload.roll;
+
+      io.sockets.adapter.rooms[lobby].players = players;
+
+      io.sockets.in(lobby).emit("diceWasRolled", { roll: payload.roll, playerId: payload.playerId, players });
     });
     gameRoom.on("okClicked", () => {
       const lobby = gameRoom.adapter.rooms.lobby;
