@@ -93,7 +93,6 @@ io.sockets.on("connection", (gameRoom) => {
         players: io.sockets.adapter.rooms[lobby].players,
       });
       io.sockets.adapter.rooms[lobby].popUpOpen = true;
-      console.log("popup Open? " + io.sockets.adapter.rooms[lobby].popUpOpen);
       io.sockets.in(lobby).emit("popUpUpdated", io.sockets.adapter.rooms[lobby].popUpOpen);
     });
     // Dice
@@ -102,7 +101,9 @@ io.sockets.on("connection", (gameRoom) => {
       let players = io.sockets.adapter.rooms[lobby].players;
 
       players[payload.playerId].tile = players[payload.playerId].tile + payload.roll;
-
+      if (players[payload.playerId].tile > 72) {
+        players[payload.playerId].tile = 72;
+      }
       io.sockets.adapter.rooms[lobby].players = players;
 
       io.sockets.in(lobby).emit("diceWasRolled", { roll: payload.roll, playerId: payload.playerId, players });
