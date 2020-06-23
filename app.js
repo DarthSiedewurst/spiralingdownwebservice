@@ -31,6 +31,12 @@ io.sockets.adapter.rooms.gameStarted = false;
 io.sockets.on("connection", (gameRoom) => {
   console.log("Connected");
 
+  gameRoom.on("reconnectSocket", (lobby) => {
+    gameRoom.join(lobby.lobby);
+    io.sockets.in(lobby.ownLobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby].players);
+    io.sockets.in(lobby.ownLobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
+  });
+
   gameRoom.on("joinLobby", (lobby) => {
     console.log("Lobby Joined: " + lobby);
 
@@ -83,6 +89,10 @@ io.sockets.on("connection", (gameRoom) => {
 
     gameRoom.on("getPlayerFromSocket", (lobby) => {
       io.sockets.in(lobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby].players);
+    });
+
+    gameRoom.on("getUpdate", (lobby) => {
+      io.sockets.in(lobby.ownLobby).emit("gotUpdate", io.sockets.adapter.rooms[lobby.lobby].players);
     });
 
     // Ruleset
