@@ -33,8 +33,8 @@ io.sockets.on("connection", (gameRoom) => {
 
   gameRoom.on("reconnectSocket", (lobby) => {
     gameRoom.join(lobby.lobby);
-    io.sockets.in(lobby.ownLobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby].players);
-    io.sockets.in(lobby.ownLobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
+    io.sockets.in(lobby.ownLobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby.lobby].players);
+    io.sockets.in(lobby.ownLobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby.lobby].ruleset);
   });
 
   gameRoom.on("joinLobby", (lobby) => {
