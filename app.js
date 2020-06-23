@@ -153,6 +153,8 @@ io.sockets.on("connection", (gameRoom) => {
         players[0].activeTurn = true;
       }
 
+      io.sockets.adapter.rooms[lobby].players = players;
+
       io.sockets.in(lobby).emit("nextTurn", players);
     });
   });
