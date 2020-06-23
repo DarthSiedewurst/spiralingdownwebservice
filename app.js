@@ -35,7 +35,7 @@ io.sockets.on("connection", (gameRoom) => {
     console.log("Lobby Joined: " + lobby);
 
     gameRoom.join(lobby);
-    gameRoom.emit("lobbyJoined", "You have sucessfully joined: " + lobby);
+    gameRoom.emit("lobbyJoined", lobby);
     io.sockets.in(lobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby].players);
     io.sockets.in(lobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
 
@@ -47,6 +47,7 @@ io.sockets.on("connection", (gameRoom) => {
     // Players
     gameRoom.on("addPlayerToSocket", (newPlayer) => {
       const lobby = newPlayer.lobby;
+      const ownLobby = newPlayer.ownLobby;
       let players = [];
 
       if (io.sockets.adapter.rooms.gameStarted) {
@@ -59,12 +60,25 @@ io.sockets.on("connection", (gameRoom) => {
       if (io.sockets.adapter.rooms[lobby].players !== undefined) {
         players = io.sockets.adapter.rooms[lobby].players;
       }
+      let error = false;
+      players.forEach((player) => {
+        if (player.color === newPlayer.newPlayer.color) {
+          io.sockets.in(ownLobby).emit("playersNotUpdated", newPlayer.newPlayer.color);
+          error = true;
+        }
+      });
+      if (error) {
+        return;
+      }
       const newPlayers = players;
+
+      newPlayer.newPlayer.id = players.length;
 
       newPlayers.push(newPlayer.newPlayer);
       players = newPlayers;
       io.sockets.adapter.rooms[lobby].players = players;
       io.sockets.in(lobby).emit("playersUpdated", players);
+      io.sockets.in(ownLobby).emit("goToNewGame");
     });
 
     gameRoom.on("getPlayerFromSocket", (lobby) => {
@@ -74,6 +88,9 @@ io.sockets.on("connection", (gameRoom) => {
     // Ruleset
     gameRoom.on("setRulesetToSocket", (ruleset) => {
       const lobby = ruleset.lobby;
+      console.log(io.sockets.adapter.rooms);
+      console.log("lobby: " + lobby);
+      console.log("lobbyrooms: " + io.sockets.adapter.rooms[lobby]);
       io.sockets.adapter.rooms[lobby].ruleset = ruleset.ruleset;
 
       io.sockets.in(lobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby].ruleset);
