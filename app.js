@@ -36,11 +36,9 @@ io.sockets.on("connection", (gameRoom) => {
     console.log("lobby lobby");
     console.log(lobby.lobby);
     console.log("lobby ownlobby");
-    console.log(lobby.ownlobby);
+    console.log(lobby.ownLobby);
     console.log("playersUpdated");
     console.log(io.sockets.adapter.rooms[lobby.lobby].players);
-    console.log("rulesetUpdated");
-    console.log(io.sockets.adapter.rooms[lobby.lobby].ruleset);
     console.log("nextTurn");
     io.sockets.in(lobby.ownLobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby.lobby].players);
     io.sockets.in(lobby.ownLobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby.lobby].ruleset);
