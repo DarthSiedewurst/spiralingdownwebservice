@@ -125,8 +125,9 @@ io.sockets.on("connection", (gameRoom) => {
       id: id.id,
       players: io.sockets.adapter.rooms[lobby].players,
     });
+    const random = Math.random();
     io.sockets.adapter.rooms[lobby].popUpOpen = true;
-    io.sockets.in(lobby).emit("popUpUpdated", io.sockets.adapter.rooms[lobby].popUpOpen);
+    io.sockets.in(lobby).emit("popUpUpdated", { popUpOpen: io.sockets.adapter.rooms[lobby].popUpOpen, random });
   });
   // Dice
   gameRoom.on("moveInSocket", (payload) => {
