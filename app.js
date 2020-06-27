@@ -113,7 +113,8 @@ io.sockets.on("connection", (gameRoom) => {
   });
   // PopUp
   gameRoom.on("updatePopUpOpen", (lobby) => {
-    io.sockets.in(lobby).emit("popUpUpdated", io.sockets.adapter.rooms[lobby].popUpOpen);
+    console.log(io.sockets.adapter.rooms[lobby].popUpOpen)
+    io.sockets.in(lobby).emit("popUpUpdated", {popUpOpen : io.sockets.adapter.rooms[lobby].popUpOpen});
   });
   gameRoom.on("okClicked", (lobby) => {
     io.sockets.in(lobby).emit("okHasBeenClicked");
