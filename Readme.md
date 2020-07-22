@@ -1,3 +1,3 @@
 CICD Docker test
-New Lets Encrypt musst be cp
+New Lets Encrypt are be copied
 Docker restart
