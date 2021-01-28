@@ -7,8 +7,8 @@ let options = {};
 let https = null;
 try {
   options = {
-    key: fs.readFileSync("./certs/privkey4.pem"),
-    cert: fs.readFileSync("./certs/fullchain4.pem"),
+    key: fs.readFileSync("./certs/privkey7.pem"),
+    cert: fs.readFileSync("./certs/fullchain7.pem"),
   };
   https = require("https");
 } catch (e) {
