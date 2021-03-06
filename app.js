@@ -40,7 +40,7 @@ io.sockets.on("connection", (gameRoom) => {
     console.log("reconnectSocket: playersUpdated");
     console.log(io.sockets.adapter.rooms[lobby.lobby].players);
     console.log("reconnectSocket: nextTurn");
-    io.sockets.in(lobby.ownLobby).emit("popUpUpdated", {popUpOpen : io.sockets.adapter.rooms[lobby].popUpOpen});
+    io.sockets.in(lobby.ownLobby).emit("popUpUpdated", {popUpOpen : io.sockets.adapter.rooms[lobby.lobby].popUpOpen});
     io.sockets.in(lobby.ownLobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby.lobby].players);
     io.sockets.in(lobby.ownLobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby.lobby].ruleset);
     io.sockets.in(lobby.ownLobby).emit("nextTurn", io.sockets.adapter.rooms[lobby.lobby].players);
@@ -48,7 +48,7 @@ io.sockets.on("connection", (gameRoom) => {
 
   gameRoom.on("joinLobby", (lobby) => {
     console.log("joinLobby: lobby");
-    console.log(lobby.lobby);
+    console.log(lobby);
     
     gameRoom.join(lobby);
     gameRoom.emit("lobbyJoined", lobby);
