@@ -9,6 +9,10 @@ try {
   options = {
     key: fs.readFileSync("./certs/privkey7.pem"),
     cert: fs.readFileSync("./certs/fullchain7.pem"),
+    cors: {
+      origin: "https://spiralingdown.de",
+      methods: ["GET", "POST"]
+    }
   };
   https = require("https");
 } catch (e) {
