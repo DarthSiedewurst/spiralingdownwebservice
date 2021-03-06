@@ -9,10 +9,6 @@ try {
   options = {
     key: fs.readFileSync("./certs/privkey7.pem"),
     cert: fs.readFileSync("./certs/fullchain7.pem"),
-    cors: {
-      origin: "https://spiralingdown.de",
-      methods: ["GET", "POST"]
-    }
   };
   https = require("https");
 } catch (e) {
@@ -37,20 +33,21 @@ io.sockets.on("connection", (gameRoom) => {
 
   gameRoom.on("reconnectSocket", (lobby) => {
     gameRoom.join(lobby.lobby);
-    console.log("reconnectSocket: lobby lobby");
+    console.log("reconnectSocket: lobby");
     console.log(lobby.lobby);
-    console.log("reconnectSocket: lobby ownlobby");
+    console.log("reconnectSocket: ownlobby");
     console.log(lobby.ownLobby);
     console.log("reconnectSocket: playersUpdated");
     console.log(io.sockets.adapter.rooms[lobby.lobby].players);
     console.log("reconnectSocket: nextTurn");
+    io.sockets.in(lobby.ownLobby).emit("popUpUpdated", {popUpOpen : io.sockets.adapter.rooms[lobby].popUpOpen});
     io.sockets.in(lobby.ownLobby).emit("playersUpdated", io.sockets.adapter.rooms[lobby.lobby].players);
     io.sockets.in(lobby.ownLobby).emit("rulesetUpdated", io.sockets.adapter.rooms[lobby.lobby].ruleset);
     io.sockets.in(lobby.ownLobby).emit("nextTurn", io.sockets.adapter.rooms[lobby.lobby].players);
   });
 
   gameRoom.on("joinLobby", (lobby) => {
-    console.log("joinLobby: lobby lobby");
+    console.log("joinLobby: lobby");
     console.log(lobby.lobby);
     
     gameRoom.join(lobby);
