@@ -30,4 +30,5 @@ jobs:
             docker rm service
             docker rmi serviceimage
             docker build -t serviceimage .
-            docker run -d --restart always -p 3000:3000 -v certs:/app/certs --name service serviceimage
+            docker container run -it -d -v "$(pwd):/app" -v certs:/app/certs  --restart always -p 3000:3000 --name service serviceimage
+            docker exec service ["npm i", "npm run start"]
