@@ -32,4 +32,4 @@ jobs:
             docker build -t serviceimage .
             docker container run -it -d -v "$(pwd):/app" -v certs:/app/certs  --restart always -p 3000:3000 --name service serviceimage
             docker exec service npm i
-            docker exec service npm run start
+            docker exec -d service npm run start
