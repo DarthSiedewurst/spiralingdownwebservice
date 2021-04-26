@@ -137,8 +137,8 @@ io.sockets.on("connection", (gameRoom) => {
     let players = io.sockets.adapter.rooms[lobby].players;
 
     players[payload.playerId].tile = players[payload.playerId].tile + payload.roll;
-    if (players[payload.playerId].tile > 72) {
-      players[payload.playerId].tile = 72;
+    if (players[payload.playerId].tile > 71) {
+      players[payload.playerId].tile = 71;
     }
     io.sockets.adapter.rooms[lobby].players = players;
 
